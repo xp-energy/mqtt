@@ -1,0 +1,49 @@
+{
+  "name": "mqtt",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xp-energy/mqtt"
+  },
+  "scripts": {
+    "commit": "git cz",
+    "prepare": "husky install",
+    "release": "semantic-release --no-ci",
+    "test": "jest --coverage"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix --ext .js",
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^27.4.1",
+    "commitizen": "^4.2.4",
+    "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.2",
+    "semantic-release": "^19.0.2"
+  }
+}

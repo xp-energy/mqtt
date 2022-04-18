@@ -1,0 +1,31 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+protected_branch='master'
+protected_branch_dev='develop'
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+MESSAGE=$(git log -1 HEAD --pretty=format:%s)
+
+# Colors
+RED='\033[1;31m'  # red
+CYAN='\033[0;36m' # cyan
+NC='\033[0m'      # No Color
+bold=$(tput bold)
+
+if [[ "$MESSAGE" =~ "chore(release):" ]]; then
+  exit 0
+  # echo "inside if"
+  # read -p "You're about to make a release, is that what you intended? [y|n]" -n 1 -r </dev/tty
+  # echo
+  # if echo $REPLY | grep -E '^[Yy]$' >/dev/null; then
+  #   exit 0 # push will execute
+  # fi
+  # exit 1 # push will not
+else
+  if [ "$protected_branch" == "$current_branch" ] || [ "$protected_branch_dev" == "$current_branch" ]; then
+    echo -e "\n\n${RED}[Policy] ${NC}Never push code directly to the ${CYAN}"${bold}${current_branch^^}" ${NC}branch! (Prevented with pre-push hook.)\n\n"
+    exit 1 # push will not execute
+  else
+    exit 0 # push will execute
+  fi
+fi

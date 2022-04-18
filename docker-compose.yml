@@ -1,0 +1,30 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.14
+    volumes:
+      - ./server/mosquitto/config:/mosquitto/config/
+    ports:
+      - 8883:8883
+    networks:
+      - net
+    restart: unless-stopped
+  gateway:
+    build: ./server/gateway
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - net
+    depends_on:
+      - mosquitto
+  bridge:
+    build: ./server/bridge
+    networks:
+      - net
+    depends_on:
+      - mosquitto
+networks:
+  net:
+    name: net
+    driver: bridge
