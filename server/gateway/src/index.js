@@ -2,6 +2,7 @@ const mqtt = require('mqtt');
 // const fs = require("fs");
 
 const { runContainerByName } = require('./utils/container');
+const { fromRemotaToXPEId } = require('./utils/idConversion');
 
 const client = mqtt.connect({
   host: process.env.HOST,
@@ -29,7 +30,7 @@ client.on('message', (topic, message) => {
   const msg = JSON.parse(message.toString());
 
   if (topic.startsWith('remota/')) {
-    runContainerByName(`xp${msg.esn.toString().padStart(18, '0')}`);
+    runContainerByName(fromRemotaToXPEId(msg.esn));
   }
 
   console.log(message.toString());
