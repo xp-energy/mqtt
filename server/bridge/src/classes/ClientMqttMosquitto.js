@@ -1,8 +1,3 @@
-const ClientMqtt = require('./ClientMqtt');
-const ClientMqttIotCore = require('./ClientMqttIotCore');
-
-const { frameToXPEInput } = require('../utils/remota');
-
 const connectionMosquittoArgs = {
   host: process.env.HOST,
   port: process.env.PORT,
@@ -17,27 +12,19 @@ const connectionMosquittoArgs = {
   // #endregion certificates
 };
 
+const ClientMqtt = require('./ClientMqtt');
+
 class ClientMqttMosquitto extends ClientMqtt {
   constructor(meterId) {
     super('Mosquitto', connectionMosquittoArgs);
     this.meterId = meterId;
+
+    this.start();
+    this.#initialSubscription();
   }
 
-  // @Override
-  onMessage() {
-    const iotCoreClientRef = new ClientMqttIotCore(this.meterId);
-
-    this.client.on('message', (topic, message) => {
-      const iotCoreTopic = `/devices/${this.meterId}/events`;
-      const msg = message.toString();
-
-      if (topic === `remota/${this.meterId}/frames`) {
-        const data = JSON.parse(msg);
-        const xpInput = frameToXPEInput(this.meterId, data);
-
-        iotCoreClientRef.publishTo(iotCoreTopic, xpInput, 1);
-      }
-    });
+  #initialSubscription() {
+    this.subscribeTo(`remota/${this.meterId}/#`, 1);
   }
 }
 

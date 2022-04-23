@@ -3,14 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const { createJwt } = require('../utils/createJwt');
-const {
-  PROJECT_ID,
-  ALGORITHM,
-  TOKEN_EXPIRE_MIN,
-  TO_MS,
-  REGION,
-  REGISTRY_ID,
-} = require('../constants');
+
+const { PROJECT_ID, ALGORITHM, REGION, REGISTRY_ID } = require('../constants');
 
 const ClientMqtt = require('./ClientMqtt');
 
@@ -35,27 +29,17 @@ class ClientMqttIotCore extends ClientMqtt {
     connectionIotCoreArgs.clientId = deviceClientId;
 
     super('Iot Core', connectionIotCoreArgs);
+
     this.meterId = meterId;
 
-    if (this.constructor.instance) return this.constructor.instance;
-    this.constructor.instance = this;
-
-    setInterval(() => this.renewConnection(), (TOKEN_EXPIRE_MIN - 10) * TO_MS);
+    this.start();
+    this.#initialSubscription();
   }
 
-  // @Override
-  // onMessage() {
-  //   this.client.on('message', (topic, message) => {
-  //     if (topic === `/devices/${this.meterId}/config`) {
-
-  //     } else if (topic.startsWith(`/devices/${this.meterId}/commands`)) {
-  //     }
-  //     const msg = Buffer.from(message, 'base64').toString('ascii');
-  //     if (mosquittoClientRef) {
-  //       // TODO convert xpe configuration, to task_frequency format
-  //     }
-  //   });
-  // }
+  #initialSubscription() {
+    this.subscribeTo(`/devices/${this.meterId}/config`, 1);
+    this.subscribeTo(`/devices/${this.meterId}/commands`, 0);
+  }
 
   renewConnection() {
     console.log('Renew Iot Core connection token.');
@@ -67,9 +51,7 @@ class ClientMqttIotCore extends ClientMqtt {
     this.connectionArgs.password = createJwt(PROJECT_ID, ALGORITHM);
 
     this.start();
-
-    this.subscribeTo(`/devices/${this.meterId}/config`, 1);
-    this.subscribeTo(`/devices/${this.meterId}/commands`, 0);
+    this.#initialSubscription();
   }
 }
 

@@ -2,7 +2,6 @@ const mqtt = require('mqtt');
 
 class ClientMqtt {
   constructor(name, connectionArgs) {
-    console.log(`create client ${name}`);
     this.name = name;
     this.connectionArgs = connectionArgs;
   }
@@ -63,7 +62,6 @@ class ClientMqtt {
   start() {
     this.connect();
     this.onConnect();
-    this.onMessage();
     this.onClose();
     this.onError();
   }
