@@ -9,7 +9,7 @@
     "commit": "git cz",
     "prepare": "husky install",
     "release": "semantic-release --no-ci",
-    "test": "jest --coverage"
+    "test": "jest --coverage --colors"
   },
   "lint-staged": {
     "*.js": [
