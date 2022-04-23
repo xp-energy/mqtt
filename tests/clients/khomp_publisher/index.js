@@ -54,9 +54,18 @@ client.on('connect', (success) => {
         JSON.stringify(framesFormat)
       );
     }, 10000);
+
+    client.subscribe('remota/+/commands');
   } else {
     console.log('Not connected to mosquitto server...');
   }
 
   // client.end();
+});
+
+client.on('message', (topic, message) => {
+  console.log(
+    `message received from iotCore in topic ${topic}`,
+    message.toString()
+  );
 });
