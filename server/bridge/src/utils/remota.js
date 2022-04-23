@@ -6,6 +6,10 @@ function convertTimestamp(timestamp = '') {
   return timestamp.replace('T', ' ');
 }
 
+function convertDateToISOStringWithoutDots(date) {
+  return date.toISOString().replace(/\..*/g, '');
+}
+
 function decimal2Fix(value) {
   return parseFloat(value).toFixed(2);
 }
@@ -124,6 +128,29 @@ function frameToXPEInput(meterId, input) {
   return xpeInput;
 }
 
+function convertXPEConfigToTaskFrequency(xpeConfig, date) {
+  if (xpeConfig.match(/\d;\d;\d/g)) {
+    const [msFrequency] = xpeConfig.split(';');
+
+    const cmd = 'tasks_frequency';
+    const sendMeasures = msFrequency / 1e3;
+
+    return JSON.stringify({
+      cmd,
+      send_measures: sendMeasures,
+      send_logs: 1800,
+      send_status: 1800,
+      timestamp: convertDateToISOStringWithoutDots(date),
+    });
+  }
+
+  return null;
+}
+
+function convertXPEIdToRemotaFormat(xpeId) {
+  return xpeId.replace(/^xp(0)+/g, '');
+}
+
 module.exports = {
   frameToXPEInput,
   decimal2Fix,
@@ -131,4 +158,7 @@ module.exports = {
   hex2bin,
   decodeNormalFrame,
   calculateElectricalQuantities,
+  convertXPEConfigToTaskFrequency,
+  convertDateToISOStringWithoutDots,
+  convertXPEIdToRemotaFormat,
 };

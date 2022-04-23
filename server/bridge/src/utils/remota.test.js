@@ -5,11 +5,20 @@ const {
   decodeNormalFrame,
   calculateElectricalQuantities,
   frameToXPEInput,
+  convertXPEConfigToTaskFrequency,
+  convertDateToISOStringWithoutDots,
+  convertXPEIdToRemotaFormat,
 } = require('./remota');
 
 describe('Remota operations', () => {
+  it('should remove all character after dot', () => {
+    const result = convertDateToISOStringWithoutDots(new Date());
+
+    expect(result).toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/g);
+  });
+
   it('should remove T from remota timestamp format', () => {
-    const date = new Date().toISOString().replace(/\..*/g, '');
+    const date = convertDateToISOStringWithoutDots(new Date());
     const result = convertTimestamp(date);
 
     expect(result).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g);
@@ -62,7 +71,7 @@ describe('Remota operations', () => {
 
     it('should remota frame converted to XPE input format', () => {
       const now1 = new Date();
-      const nowTreated1 = now1.toISOString().replace(/\..*/g, '');
+      const nowTreated1 = convertDateToISOStringWithoutDots(now1);
       const ts1 = convertTimestamp(nowTreated1);
 
       framesFormat.ts = ts1;
@@ -76,7 +85,7 @@ describe('Remota operations', () => {
       const now2 = new Date();
       now2.setSeconds(now2.getSeconds() + 10);
 
-      const nowTreated2 = now2.toISOString().replace(/\..*/g, '');
+      const nowTreated2 = convertDateToISOStringWithoutDots(now2);
       const ts2 = convertTimestamp(nowTreated2);
 
       framesFormat.ts = ts2;
@@ -96,5 +105,37 @@ describe('Remota operations', () => {
 
       expect(result).toBe(null);
     });
+  });
+
+  describe('Configuration and commands conversion', () => {
+    it('should convert xpe input to tasks_frequency JSON', () => {
+      const xpeInput = '300000;0;0';
+      const timestamp = new Date();
+      const timestampISO = convertDateToISOStringWithoutDots(timestamp);
+
+      const res = convertXPEConfigToTaskFrequency(xpeInput, timestamp);
+
+      expect(res).toBe(
+        `{"cmd":"tasks_frequency","send_measures":300,"send_logs":1800,"send_status":1800,"timestamp":"${timestampISO}"}`
+      );
+    });
+
+    it('should return null for invalid config', () => {
+      const xpeInput = 'invalid';
+      const timestamp = new Date();
+
+      const res = convertXPEConfigToTaskFrequency(xpeInput, timestamp);
+
+      expect(res).toBe(null);
+    });
+  });
+
+  it('should convert xpe id to remota id', () => {
+    const xpeId = 'xp000000000000001235';
+    const remotaId = '1235';
+
+    const res = convertXPEIdToRemotaFormat(xpeId);
+
+    expect(res).toBe(remotaId);
   });
 });
