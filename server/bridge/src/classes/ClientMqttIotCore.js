@@ -1,4 +1,3 @@
-/* eslint-disable no-constructor-return */
 const fs = require('fs');
 const path = require('path');
 
@@ -29,14 +28,15 @@ class ClientMqttIotCore extends ClientMqtt {
     connectionIotCoreArgs.clientId = deviceClientId;
 
     super('Iot Core', connectionIotCoreArgs);
-
     this.meterId = meterId;
 
-    this.start();
-    this.#initialSubscription();
+    console.log('construtor de iot Core conn');
+    this.initialSubscription();
   }
 
-  #initialSubscription() {
+  initialSubscription() {
+    console.log('call subscription func...');
+
     this.subscribeTo(`/devices/${this.meterId}/config`, 1);
     this.subscribeTo(`/devices/${this.meterId}/commands`, 0);
   }
@@ -51,7 +51,7 @@ class ClientMqttIotCore extends ClientMqtt {
     this.connectionArgs.password = createJwt(PROJECT_ID, ALGORITHM);
 
     this.start();
-    this.#initialSubscription();
+    this.initialSubscription();
   }
 }
 

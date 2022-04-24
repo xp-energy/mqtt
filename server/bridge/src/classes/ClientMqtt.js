@@ -4,6 +4,9 @@ class ClientMqtt {
   constructor(name, connectionArgs) {
     this.name = name;
     this.connectionArgs = connectionArgs;
+
+    console.log('Call parent constructor');
+    this.start();
   }
 
   connect() {
@@ -60,6 +63,8 @@ class ClientMqtt {
   }
 
   start() {
+    console.log('Call start function from constructor');
+
     this.connect();
     this.onConnect();
     this.onClose();

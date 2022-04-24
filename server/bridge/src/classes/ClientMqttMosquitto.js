@@ -19,7 +19,6 @@ class ClientMqttMosquitto extends ClientMqtt {
     super('Mosquitto', connectionMosquittoArgs);
     this.meterId = meterId;
 
-    this.start();
     this.#initialSubscription();
   }
 
