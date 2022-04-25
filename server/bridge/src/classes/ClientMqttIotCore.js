@@ -31,10 +31,10 @@ class ClientMqttIotCore extends ClientMqtt {
     this.meterId = meterId;
 
     console.log('construtor de iot Core conn');
-    this.initialSubscription();
+    this.#initialSubscription();
   }
 
-  initialSubscription() {
+  #initialSubscription() {
     console.log('call subscription func...');
 
     this.subscribeTo(`/devices/${this.meterId}/config`, 1);
@@ -51,7 +51,7 @@ class ClientMqttIotCore extends ClientMqtt {
     this.connectionArgs.password = createJwt(PROJECT_ID, ALGORITHM);
 
     this.start();
-    this.initialSubscription();
+    this.#initialSubscription();
   }
 }
 

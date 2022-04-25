@@ -33,6 +33,7 @@ class Bridge {
         this.iotCoreConn.publishTo(iotCoreTopic, xpInput, 1);
       }
     };
+
     this.mosquittoConn.onMessage(onMessageMosquitto);
   }
 
