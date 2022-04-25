@@ -64,7 +64,7 @@ function decodeNormalFrame(frame) {
   const splittedFrame = frame.match(/.{2}/g);
   const binaryList = splittedFrame.map(hex2bin);
 
-  const energyFlag = parseFloat(binaryList[1].at(6));
+  const energyFlag = parseFloat(binaryList[1][6]);
   const activePulse = parseInt(binaryList[4] + binaryList[3], 2);
   const reactivePulse = parseInt(binaryList[6] + binaryList[5], 2);
 
@@ -84,7 +84,7 @@ function frameToXPEInput(meterId, input) {
     // frames = [],
     // fc = 504,
     pt = 0,
-    frame = '',
+    frame = '009082b80b1400F9',
     ts = '',
     // timestamp = '',
   } = input;
